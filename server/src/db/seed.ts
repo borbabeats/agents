@@ -1,0 +1,22 @@
+import { reset, seed } from "drizzle-seed";
+import { db, sql } from "./connection.ts";
+import { schema } from "./schema/index.ts";
+
+await reset(db, schema);
+
+await seed(db, schema).refine((f) => ({
+    rooms: {
+        count: 20,
+        columns: {
+            id: f.uuid(),
+            name: f.companyName({}),
+            description: f.loremIpsum({}),
+            createdAt: f.date({})
+        }   
+    }
+}));
+
+await sql.end();
+
+// biome-ignore lint/suspicious/noConsole: only used in dev
+console.log("Database seeded");
